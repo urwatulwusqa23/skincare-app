@@ -19,39 +19,42 @@ export default function Navbar() {
     <motion.nav
       initial={{ y: -80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-      className="fixed top-0 left-0 right-0 z-50 px-6 py-4"
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      className="fixed top-0 left-0 right-0 z-50"
+      style={{ background: '#0e0c0a', borderBottom: '1px solid rgba(245,240,234,0.07)' }}
     >
-      <div className="max-w-7xl mx-auto glass rounded-2xl px-6 py-3 flex items-center justify-between shadow-soft">
+      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+
         {/* Logo */}
         <motion.button
           onClick={() => setPage('home')}
-          className="flex items-center gap-2.5 group"
+          className="flex items-center gap-2.5"
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
         >
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blush-dark to-rose-dark flex items-center justify-center shadow-blush">
-            <Sparkles size={15} className="text-white" />
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center"
+            style={{ background: '#f53d1c' }}>
+            <Sparkles size={14} className="text-white" />
           </div>
-          <span className="font-display text-xl font-bold text-gradient-warm">GlowOS</span>
+          <span className="font-display text-xl font-bold text-white">GlowOS</span>
         </motion.button>
 
         {/* Desktop nav */}
-        <div className="hidden md:flex items-center gap-1">
+        <div className="hidden md:flex items-center gap-0.5">
           {navItems.map((item) => (
             <motion.button
               key={item.page}
               onClick={() => setPage(item.page)}
-              className="relative px-4 py-2 rounded-xl text-sm font-medium transition-colors"
-              style={{ color: activePage === item.page ? '#b85c42' : '#8a7870' }}
+              className="relative px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+              style={{ color: activePage === item.page ? '#f53d1c' : 'rgba(245,240,234,0.5)' }}
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.96 }}
             >
               {activePage === item.page && (
                 <motion.div
                   layoutId="nav-pill"
-                  className="absolute inset-0 rounded-xl"
-                  style={{ background: 'rgba(232,165,152,0.18)', border: '1px solid rgba(212,131,106,0.22)' }}
+                  className="absolute inset-0 rounded-lg"
+                  style={{ background: 'rgba(245,61,28,0.1)', border: '1px solid rgba(245,61,28,0.2)' }}
                   transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                 />
               )}
@@ -60,22 +63,24 @@ export default function Navbar() {
           ))}
         </div>
 
-        {/* Right */}
-        <div className="flex items-center gap-3">
+        {/* Right actions */}
+        <div className="flex items-center gap-2.5">
           <motion.button
             onClick={() => setNotifOpen(!notifOpen)}
-            className="relative w-9 h-9 rounded-xl glass flex items-center justify-center shadow-soft"
+            className="relative w-9 h-9 rounded-lg flex items-center justify-center"
+            style={{ background: 'rgba(245,240,234,0.07)', border: '1px solid rgba(245,240,234,0.1)' }}
             whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.92 }}
           >
-            <Bell size={16} className="text-stone" />
+            <Bell size={15} style={{ color: 'rgba(245,240,234,0.65)' }} />
             <AnimatePresence>
               {unreadCount > 0 && (
                 <motion.span
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   exit={{ scale: 0 }}
-                  className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-blush-dark text-white text-[9px] font-bold flex items-center justify-center"
+                  className="absolute -top-1 -right-1 w-4 h-4 rounded-full text-white text-[9px] font-bold flex items-center justify-center"
+                  style={{ background: '#f53d1c' }}
                 >
                   {unreadCount}
                 </motion.span>
@@ -84,13 +89,18 @@ export default function Navbar() {
           </motion.button>
 
           <motion.div
-            className="w-9 h-9 rounded-xl bg-gradient-to-br from-blush to-sage flex items-center justify-center text-sm font-bold text-white cursor-pointer shadow-soft"
-            whileHover={{ scale: 1.08, rotate: 4 }}
+            className="w-9 h-9 rounded-lg flex items-center justify-center text-sm font-bold text-white cursor-pointer"
+            style={{ background: '#f53d1c' }}
+            whileHover={{ scale: 1.08, rotate: 5 }}
           >
             A
           </motion.div>
 
-          <button className="md:hidden text-stone" onClick={() => setMenuOpen(!menuOpen)}>
+          <button
+            className="md:hidden"
+            style={{ color: 'rgba(245,240,234,0.65)' }}
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
             {menuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
@@ -100,24 +110,27 @@ export default function Navbar() {
       <AnimatePresence>
         {menuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="md:hidden mt-2 glass rounded-2xl px-4 py-3 flex flex-col gap-1 shadow-soft"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden overflow-hidden"
+            style={{ background: '#0e0c0a', borderTop: '1px solid rgba(245,240,234,0.07)' }}
           >
-            {navItems.map((item) => (
-              <button
-                key={item.page}
-                onClick={() => { setPage(item.page); setMenuOpen(false) }}
-                className="text-left px-4 py-3 rounded-xl text-sm font-medium transition-colors"
-                style={{
-                  color: activePage === item.page ? '#b85c42' : '#8a7870',
-                  background: activePage === item.page ? 'rgba(232,165,152,0.15)' : 'transparent',
-                }}
-              >
-                {item.label}
-              </button>
-            ))}
+            <div className="px-4 py-3 flex flex-col gap-1">
+              {navItems.map((item) => (
+                <button
+                  key={item.page}
+                  onClick={() => { setPage(item.page); setMenuOpen(false) }}
+                  className="text-left px-4 py-3 rounded-lg text-sm font-medium transition-colors"
+                  style={{
+                    color: activePage === item.page ? '#f53d1c' : 'rgba(245,240,234,0.5)',
+                    background: activePage === item.page ? 'rgba(245,61,28,0.1)' : 'transparent',
+                  }}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

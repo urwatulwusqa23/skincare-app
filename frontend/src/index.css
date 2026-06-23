@@ -5,95 +5,88 @@
 @layer base {
   body {
     font-family: 'DM Sans', sans-serif;
-    background: #fdf8f4;
-    color: #3a2e28;
+    background: #f5f0ea;
+    color: #0e0c0a;
   }
 }
 
 @layer utilities {
-  /* ── Gradients ─────────────────────────────────────── */
+  /* ── Gradients ─────────────────────────────────── */
   .text-gradient {
-    background: linear-gradient(135deg, #c46f63 0%, #d4836a 50%, #b5c9b8 100%);
+    background: linear-gradient(135deg, #f53d1c 0%, #7c3aed 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
   .text-gradient-warm {
-    background: linear-gradient(135deg, #b85c42 0%, #d4836a 100%);
+    background: linear-gradient(135deg, #f53d1c 0%, #c42a0d 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
-  /* ── Glass cards (light) ───────────────────────────── */
+  /* ── Card base (replaces glass) ─────────────────── */
   .glass {
-    background: rgba(255, 255, 255, 0.72);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(232, 216, 200, 0.6);
+    background: rgba(255, 255, 255, 0.97);
+    border: 1px solid #dfd3c4;
   }
 
   .glass-blush {
-    background: rgba(242, 196, 176, 0.18);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(212, 131, 106, 0.25);
+    background: rgba(245, 61, 28, 0.06);
+    border: 1px solid rgba(245, 61, 28, 0.15);
   }
 
   .glass-sage {
-    background: rgba(181, 201, 184, 0.18);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(122, 158, 128, 0.25);
+    background: rgba(0, 168, 119, 0.06);
+    border: 1px solid rgba(0, 168, 119, 0.15);
   }
 
-  /* ── Shadows ───────────────────────────────────────── */
+  /* ── Shadows ─────────────────────────────────────── */
   .shadow-blush {
-    box-shadow: 0 8px 32px rgba(212, 131, 106, 0.18), 0 2px 8px rgba(212, 131, 106, 0.10);
+    box-shadow: 0 6px 24px rgba(245, 61, 28, 0.25), 0 2px 6px rgba(245, 61, 28, 0.15);
   }
 
   .shadow-soft {
-    box-shadow: 0 4px 24px rgba(138, 120, 112, 0.12), 0 1px 4px rgba(138, 120, 112, 0.08);
+    box-shadow: 0 4px 24px rgba(14, 12, 10, 0.1), 0 1px 4px rgba(14, 12, 10, 0.06);
   }
 
   .shadow-card {
-    box-shadow: 0 2px 16px rgba(90, 72, 64, 0.08), 0 1px 4px rgba(90, 72, 64, 0.05);
+    box-shadow: 0 2px 12px rgba(14, 12, 10, 0.07), 0 1px 3px rgba(14, 12, 10, 0.04);
   }
 
-  /* ── Shimmer loader ────────────────────────────────── */
+  /* ── Shimmer loader ──────────────────────────────── */
   .shimmer-bg {
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.55), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
     background-size: 200% 100%;
     animation: shimmer 2.5s linear infinite;
   }
 
-  /* ── Pill / tag ────────────────────────────────────── */
+  /* ── Pill / tag ──────────────────────────────────── */
   .pill {
     display: inline-flex;
     align-items: center;
     padding: 4px 12px;
     border-radius: 9999px;
     font-size: 11px;
-    font-weight: 500;
+    font-weight: 600;
+  }
+
+  /* ── Dot grid bg texture ─────────────────────────── */
+  .bg-grid {
+    background-image: radial-gradient(circle, rgba(14,12,10,0.055) 1px, transparent 1px);
+    background-size: 22px 22px;
   }
 }
 
-/* ── Floating background orbs ──────────────────────── */
-.orb {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(70px);
-  pointer-events: none;
-  animation: float var(--dur, 8s) ease-in-out infinite;
-  animation-delay: var(--del, 0s);
-}
-
-/* ── 3D card tilt ──────────────────────────────────── */
+/* ── 3D card tilt ────────────────────────────────── */
 .tilt-card { transform-style: preserve-3d; }
 
 .card-shine {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: radial-gradient(circle at var(--x,50%) var(--y,50%), rgba(255,255,255,0.45), transparent 65%);
+  background: radial-gradient(circle at var(--x,50%) var(--y,50%), rgba(255,255,255,0.4), transparent 60%);
   opacity: 0;
   transition: opacity 0.3s ease;
   pointer-events: none;
@@ -101,7 +94,7 @@
 
 .tilt-card:hover .card-shine { opacity: 1; }
 
-/* ── Progress bar shimmer ──────────────────────────── */
+/* ── Progress bar shimmer ─────────────────────────── */
 .glow-bar {
   border-radius: 9999px;
   position: relative;
@@ -116,15 +109,20 @@
   animation: shimmer 2.5s linear infinite;
 }
 
-/* ── Countdown digits ──────────────────────────────── */
+/* ── Countdown digits ────────────────────────────── */
 .countdown-digit {
   display: inline-block;
-  background: rgba(232, 165, 152, 0.15);
-  border: 1px solid rgba(212, 131, 106, 0.2);
-  border-radius: 6px;
+  background: rgba(245, 61, 28, 0.1);
+  border: 1px solid rgba(245, 61, 28, 0.22);
+  border-radius: 5px;
   padding: 2px 6px;
   font-variant-numeric: tabular-nums;
   font-size: 11px;
   font-weight: 600;
-  color: #b85c42;
+  color: #f53d1c;
+}
+
+/* ── Orb: hidden — use geometric accents instead ─── */
+.orb {
+  display: none;
 }

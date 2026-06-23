@@ -30,4 +30,28 @@ export default {
         'float-slow': 'float 9s ease-in-out infinite',
         'shimmer':    'shimmer 2.5s linear infinite',
         'fade-up':    'fade-up 0.6s ease-out',
-        'scale-in
+        'scale-in':   'scale-in 0.4s cubic-bezier(0.34,1.56,0.64,1)',
+      },
+      keyframes: {
+        float: {
+          '0%,100%': { transform: 'translateY(0px) rotate(0deg)' },
+          '33%':     { transform: 'translateY(-18px) rotate(1.5deg)' },
+          '66%':     { transform: 'translateY(-8px) rotate(-1.5deg)' },
+        },
+        shimmer: {
+          '0%':   { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition:  '200% 0' },
+        },
+        'fade-up': {
+          from: { opacity: '0', transform: 'translateY(24px)' },
+          to:   { opacity: '1', transform: 'translateY(0)' },
+        },
+        'scale-in': {
+          from: { opacity: '0', transform: 'scale(0.92)' },
+          to:   { opacity: '1', transform: 'scale(1)' },
+        },
+      },
+    },
+  },
+  plugins: [],
+}
