@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion'
 
 const items = [
-  'Niacinamide', '◆', 'Retinol', '◆', 'Hyaluronic Acid', '◆', 'Vitamin C', '◆',
-  'Ceramides', '◆', 'Peptides', '◆', 'AHA / BHA', '◆', 'Squalane', '◆',
-  'Bakuchiol', '◆', 'Snail Mucin', '◆', 'Azelaic Acid', '◆', 'Tranexamic Acid', '◆',
+  'Saeed Ghani', '◆', 'Hemani', '◆', 'Iba Halal Care', '◆', 'Rivaj UK', '◆',
+  'Derma Shine', '◆', 'Niacinamide', '◆', 'Vitamin C', '◆', 'Kojic Acid', '◆',
+  'SPF 50+', '◆', 'Retinol', '◆', 'Rose Water', '◆', 'Kalonji Oil', '◆',
 ]
 
 export default function Marquee({ reverse = false, accent = false }) {

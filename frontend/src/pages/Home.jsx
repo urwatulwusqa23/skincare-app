@@ -1,11 +1,50 @@
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from 'framer-motion'
-import { useRef, useState, useEffect, Suspense, lazy } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { ArrowRight, Sparkles, Droplets, Star, Bell, CheckCircle } from 'lucide-react'
 import { useStore } from '../store'
 import { useCounter } from '../hooks/useCounter'
 import Marquee from '../components/Marquee'
 
-const Scene3D = lazy(() => import('../components/Scene3D'))
+/* ─── Lightweight hero visual (replaces heavy Three.js scene) ── */
+function HeroVisual() {
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden">
+      {/* Outer rotating coral ring */}
+      <motion.div animate={{ rotate: 360 }} transition={{ duration: 80, repeat: Infinity, ease: 'linear' }}
+        className="absolute rounded-full"
+        style={{ width:780, height:780, right:-260, top:'50%', marginTop:-390,
+          border:'1px solid rgba(245,61,28,0.13)' }} />
+      {/* Inner violet ring */}
+      <motion.div animate={{ rotate: -360 }} transition={{ duration: 55, repeat: Infinity, ease: 'linear' }}
+        className="absolute rounded-full"
+        style={{ width:520, height:520, right:-120, top:'50%', marginTop:-260,
+          border:'1px solid rgba(124,58,237,0.1)' }} />
+      {/* Teal ring */}
+      <motion.div animate={{ rotate: 360 }} transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
+        className="absolute rounded-full"
+        style={{ width:320, height:320, right:30, top:'50%', marginTop:-160,
+          border:'1px solid rgba(0,168,119,0.09)' }} />
+      {/* Coral filled dot — top */}
+      {[
+        { size:10, right:180, top:'22%', color:'#f53d1c', delay:0 },
+        { size:6,  right:340, top:'35%', color:'#7c3aed', delay:0.8 },
+        { size:8,  right:90,  top:'55%', color:'#00a877', delay:1.5 },
+        { size:5,  right:260, top:'68%', color:'#f59e0b', delay:0.4 },
+        { size:7,  right:420, top:'20%', color:'#f53d1c', delay:1.1 },
+      ].map((d, i) => (
+        <motion.div key={i}
+          animate={{ y:[0,-18,0], opacity:[0.4,0.85,0.4] }}
+          transition={{ duration:3.5+i*0.6, repeat:Infinity, delay:d.delay, ease:'easeInOut' }}
+          className="absolute rounded-full"
+          style={{ width:d.size, height:d.size, right:d.right, top:d.top, background:d.color }} />
+      ))}
+      {/* Subtle radial glow behind the rings */}
+      <div className="absolute rounded-full"
+        style={{ width:600, height:600, right:-180, top:'50%', marginTop:-300,
+          background:'radial-gradient(circle, rgba(245,61,28,0.04) 0%, transparent 70%)' }} />
+    </div>
+  )
+}
 
 /* ─── Animated counter ─────────────────────────────── */
 function Counter({ to, suffix = '', prefix = '' }) {
@@ -53,7 +92,7 @@ const STORY_STEPS = [
     desc: 'Add products to your AM or PM routine. GlowOS checks every ingredient combination in real-time.',
     visual: (
       <div className="space-y-2.5">
-        {['CeraVe Cleanser', 'Niacinamide Serum', 'SPF 50'].map((p, i) => (
+        {['Saeed Ghani Neem Wash', 'Derma Shine Niacinamide', 'Iba SPF 40'].map((p, i) => (
           <motion.div key={p}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -62,7 +101,7 @@ const STORY_STEPS = [
             style={{ border: '1px solid #dfd3c4' }}>
             <div className="w-8 h-8 rounded-lg flex items-center justify-center text-sm"
               style={{ background: 'rgba(245,61,28,0.08)' }}>
-              {['🧴', '✨', '☀️'][i]}
+              {['🌿', '💎', '☀️'][i]}
             </div>
             <span className="text-sm font-medium" style={{ color: '#0e0c0a' }}>{p}</span>
             <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: i * 0.18 + 0.4 }}
@@ -121,10 +160,10 @@ const STORY_STEPS = [
           <motion.div animate={{ scale: [1, 1.3, 1] }} transition={{ repeat: 3, duration: 0.5 }}
             className="ml-auto w-2 h-2 rounded-full" style={{ background: '#f53d1c' }} />
         </div>
-        <p className="text-xs font-bold" style={{ color: '#0e0c0a' }}>Paula's Choice BHA 2% — Back in stock</p>
-        <p className="text-[11px] mt-1" style={{ color: '#6b5e55' }}>Your skin type: ✓ oily ✓ pores ✓ acne</p>
+        <p className="text-xs font-bold" style={{ color: '#0e0c0a' }}>Iba Halal SPF 50+ — Back in stock</p>
+        <p className="text-[11px] mt-1" style={{ color: '#6b5e55' }}>Your skin type: ✓ oily ✓ sensitive ✓ all types</p>
         <button className="mt-3 w-full py-2 rounded-xl text-xs font-bold text-white"
-          style={{ background: '#f53d1c' }}>Shop now — $34</button>
+          style={{ background: '#f53d1c' }}>Shop Now — Rs. 620</button>
       </motion.div>
     ),
   },
@@ -162,92 +201,39 @@ const STORY_STEPS = [
   },
 ]
 
-/* ─── Scrollytelling ────────────────────────────────── */
-function Scrollytelling() {
-  const containerRef = useRef(null)
-  const { scrollYProgress } = useScroll({ target: containerRef, offset: ['start start', 'end end'] })
-  const [activeStep, setActiveStep] = useState(0)
-
-  useEffect(() => {
-    return scrollYProgress.on('change', v => {
-      setActiveStep(Math.min(STORY_STEPS.length - 1, Math.floor(v * STORY_STEPS.length)))
-    })
-  }, [scrollYProgress])
-
-  const step = STORY_STEPS[activeStep]
-  const accent = STEP_ACCENTS[activeStep]
-
+/* ─── How it works — static 2×2 grid ───────────────── */
+function HowItWorks() {
   return (
-    <section ref={containerRef} style={{ height: `${STORY_STEPS.length * 100}vh` }} className="relative">
-      <div className="sticky top-0 h-screen flex items-center overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 w-full grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-
-          {/* Left */}
-          <AnimatePresence mode="wait">
-            <motion.div key={activeStep}
-              initial={{ opacity: 0, y: 32 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -32 }}
-              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <p className="text-xs font-bold tracking-widest uppercase mb-5"
-                style={{ color: accent }}>{step.label}</p>
-              <h2 className="font-display text-4xl md:text-5xl font-bold leading-tight mb-5"
-                style={{ color: '#0e0c0a' }}>
-                {step.title}
-              </h2>
-              <p className="text-lg leading-relaxed max-w-sm" style={{ color: '#6b5e55' }}>
-                {step.desc}
-              </p>
-
-              {/* Step indicators */}
-              <div className="flex gap-2 mt-10">
-                {STORY_STEPS.map((_, i) => (
-                  <motion.div key={i}
-                    animate={{
-                      width: i === activeStep ? 28 : 8,
-                      background: i === activeStep ? STEP_ACCENTS[i] : '#dfd3c4',
-                    }}
-                    transition={{ duration: 0.3 }}
-                    className="h-2 rounded-full"
-                  />
-                ))}
-              </div>
-            </motion.div>
-          </AnimatePresence>
-
-          {/* Right — visual */}
-          <AnimatePresence mode="wait">
-            <motion.div key={activeStep}
-              initial={{ opacity: 0, scale: 0.94, rotate: 1 }}
-              animate={{ opacity: 1, scale: 1, rotate: 0 }}
-              exit={{ opacity: 0, scale: 0.96, rotate: -1 }}
-              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              className="bg-white rounded-2xl p-8 shadow-soft"
-              style={{ border: `1px solid #dfd3c4`, borderTop: `3px solid ${accent}` }}
-            >
-              <div className="flex items-center gap-3 mb-6">
-                <span className="text-3xl">{step.icon}</span>
-                <div className="flex gap-1">
-                  {[accent, `${accent}80`, `${accent}40`].map((c, j) => (
-                    <div key={j} className="w-2.5 h-2.5 rounded-full" style={{ background: c }} />
-                  ))}
-                </div>
-              </div>
-              {step.visual}
-            </motion.div>
-          </AnimatePresence>
-        </div>
-      </div>
-    </section>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12 pb-4">
+      {STORY_STEPS.map((step, i) => (
+        <motion.div key={i}
+          initial={{ opacity: 0, y: 28 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ delay: i * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          className="bg-white rounded-2xl p-8 shadow-soft"
+          style={{ border: '1px solid #dfd3c4', borderTop: `3px solid ${STEP_ACCENTS[i]}` }}>
+          <p className="text-[11px] font-bold tracking-widest uppercase mb-4"
+            style={{ color: STEP_ACCENTS[i] }}>{step.label}</p>
+          <div className="flex items-center gap-3 mb-3">
+            <span className="text-3xl">{step.icon}</span>
+            <h3 className="font-display text-xl font-bold leading-snug" style={{ color: '#0e0c0a' }}>
+              {step.title}
+            </h3>
+          </div>
+          <p className="text-sm leading-relaxed mb-6" style={{ color: '#6b5e55' }}>{step.desc}</p>
+          <div>{step.visual}</div>
+        </motion.div>
+      ))}
+    </div>
   )
 }
 
 /* ─── Reviews ───────────────────────────────────────── */
 const REVIEWS = [
-  { name: 'Anya R.',   skin: 'Dry + Sensitive', text: "I've tried so many serums. GlowOS was the first thing that actually told me WHY they weren't working together.", stars: 5, avatar: '👩🏻' },
-  { name: 'Priya M.',  skin: 'Oily + Acne',     text: 'The drop alerts are insane. Got notified about a BHA restock, checked out in 3 minutes. Never miss anything now.', stars: 5, avatar: '👩🏾' },
-  { name: 'Claire S.', skin: 'Combo',            text: 'My skin in January vs June is unrecognisable. Having the tracker made me actually commit to a routine.', stars: 5, avatar: '👩🏼' },
+  { name: 'Ayesha R.',  skin: 'Dry + Sensitive',         text: "Saeed Ghani ke products use karti thi but kabhi result nahi milta tha. GlowOS ne bataya kaunse products sath chalte hain — ab meri skin finally hydrated hai.", stars: 5, avatar: '👩🏻' },
+  { name: 'Fatima M.',  skin: 'Oily + Acne-Prone',       text: 'Iba SPF 50+ restock ka alert mila aur 5 minutes mein order kar diya. Everywhere sold out tha. GlowOS ke bina miss ho jata.', stars: 5, avatar: '👩🏾' },
+  { name: 'Mariam S.',  skin: 'Combo + Hyperpigmentation', text: 'Meri melasma itni kam ho gayi hai. Derma Shine Kojic + Hemani Vitamin C — GlowOS ne confirm kiya ke yeh safe combination hai.', stars: 5, avatar: '👩🏼' },
 ]
 
 /* ─── Main ──────────────────────────────────────────── */
@@ -265,9 +251,9 @@ export default function Home() {
       <section ref={heroRef} className="relative min-h-screen flex flex-col justify-center overflow-hidden"
         style={{ background: '#0e0c0a' }}>
 
-        {/* 3D scene */}
+        {/* Geometric hero visual */}
         <motion.div style={{ y: heroY, opacity: heroOpacity }} className="absolute inset-0 z-0">
-          <Suspense fallback={null}><Scene3D /></Suspense>
+          <HeroVisual />
         </motion.div>
 
         {/* Strong left gradient so text pops */}
@@ -304,7 +290,7 @@ export default function Home() {
             className="text-xl leading-relaxed max-w-md mb-12"
             style={{ color: 'rgba(245,240,234,0.55)' }}
           >
-            Build routines that actually work. Get personalised drop alerts. Track your glow — month by month.
+            Pakistani brands. Personalised routines. Drop alerts before they sell out. Track your glow — month by month.
           </motion.p>
 
           <motion.div className="flex flex-wrap gap-4"
@@ -350,9 +336,9 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {[
-              { to: 2400000, suffix: '+', label: 'Products tracked',   sub: 'across 180 brands',         color: '#f53d1c', icon: <Droplets size={18} /> },
-              { to: 890000,  suffix: '+', label: 'Active routines',    sub: 'built this month',           color: '#00a877', icon: <Star     size={18} /> },
-              { to: 142,     suffix: '',  label: 'Drops this week',    sub: 'matched to skin profiles',   color: '#7c3aed', icon: <Bell     size={18} /> },
+              { to: 48000,  suffix: '+', label: 'Products tracked',   sub: 'across 50+ Pakistani brands',     color: '#f53d1c', icon: <Droplets size={18} /> },
+              { to: 92000,  suffix: '+', label: 'Active routines',    sub: 'built by Pakistani users',        color: '#00a877', icon: <Star     size={18} /> },
+              { to: 58,     suffix: '',  label: 'Drops this week',    sub: 'matched to your skin profile',    color: '#7c3aed', icon: <Bell     size={18} /> },
             ].map((s, i) => (
               <motion.div key={s.label}
                 initial={{ opacity: 0, y: 32 }}
@@ -375,8 +361,8 @@ export default function Home() {
       </section>
 
       {/* ── HOW IT WORKS ─────────────────────────────── */}
-      <div style={{ background: '#f5f0ea' }}>
-        <div className="max-w-7xl mx-auto px-6 pt-20 pb-4">
+      <section className="py-20 px-6" style={{ background: '#f5f0ea' }}>
+        <div className="max-w-7xl mx-auto">
           <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
             className="text-xs font-bold tracking-widest uppercase mb-4" style={{ color: '#f53d1c' }}>
             How it works
@@ -385,9 +371,9 @@ export default function Home() {
             style={{ color: '#0e0c0a' }}>
             <SplitReveal text="Four steps to your best skin." />
           </h2>
+          <HowItWorks />
         </div>
-        <Scrollytelling />
-      </div>
+      </section>
 
       {/* ── MARQUEE 2 ────────────────────────────────── */}
       <Marquee reverse accent />
@@ -455,7 +441,7 @@ export default function Home() {
           </h2>
           <motion.p initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
             className="text-lg mb-12 leading-relaxed" style={{ color: 'rgba(255,255,255,0.7)' }}>
-            Join 890,000+ people who stopped guessing and started glowing.
+            Join 92,000+ Pakistanis who stopped guessing and started glowing.
           </motion.p>
           <motion.button onClick={() => setPage('routine')}
             initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}

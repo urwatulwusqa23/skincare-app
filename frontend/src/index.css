@@ -5,8 +5,8 @@
 @layer base {
   body {
     font-family: 'DM Sans', sans-serif;
-    background: #f5f0ea;
-    color: #0e0c0a;
+    background: #0e0c0a;
+    color: #f5f0ea;
   }
 }
 
