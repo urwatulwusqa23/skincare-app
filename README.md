@@ -64,13 +64,6 @@ cd services/NotificationService && dotnet run
 cd services/ReviewService && dotnet run
 ```
 
-## Try it
-
-1. Open http://localhost:3000
-2. Go to **My Routine** → add a few products
-3. Go to **Product Drops** → wishlist a drop (triggers alert)
-4. Click the 🔔 bell — see real-time notifications
-
 ## Event Flow Demo
 
 ```bash
